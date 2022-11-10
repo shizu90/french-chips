@@ -70,7 +70,7 @@ public class Chip8 {
 	
 	public void emuCycle() {
 		this.opcode = (char)((memory[this.pc] << 8) | memory[this.pc + 1]);
-		System.out.println(Integer.toHexString(this.opcode));
+		System.out.print(Integer.toHexString(this.opcode) + " ");
 		switch(this.opcode & 0xF000) {
 			case 0x0000:
 				switch(this.opcode & 0x00FF) {
@@ -149,7 +149,7 @@ public class Chip8 {
 					case 0x0003: // Set V[0x0X00] as V[0x0X00] xor V[0x00Y0]
 						this.vx = this.v[((this.opcode & 0x0F00) >> 0x8)];
 						this.vy = this.v[((this.opcode & 0x00F0) >> 0x4)];
-						this.v[((this.opcode & 0x0F00) >> 0x8)] = (char)((vx ^ vy) & 0xFF);
+						this.v[((this.opcode & 0x0F00) >> 0x8)] = (char)(vx ^ vy);
 						break;
 					case 0x0004: // Set V[0x0X00] as V[0x0X00] + v[0x00X0] and V[0xF] as carry
 						this.vx = this.v[((this.opcode & 0x0F00) >> 0x8)];
@@ -157,7 +157,7 @@ public class Chip8 {
 						if((vx + vy) < 0xFF) {
 							this.v[0xF] = 0x0;
 						}else this.v[0xF] = 0x1;
-						this.v[((this.opcode & 0x0F00) >> 0x8)] = (char)((vx + vy) & 0xFF);
+						this.v[((this.opcode & 0x0F00) >> 0x8)] = (char)(vx + vy);
 						this.pc += 0x2;
 						break;
 					case 0x0005: // Set V[0x0X00] as V[0x0X00] - v[0x00X0] and V[0xF] as not borrow
@@ -166,7 +166,7 @@ public class Chip8 {
 						if(vx >= vy) {
 							this.v[0xF] = 0x1;
 						}else this.v[0xF] &= 0x0;
-						this.v[((this.opcode & 0x0F00) >> 8)] = (char)((vx - vy) & 0xFF);
+						this.v[((this.opcode & 0x0F00) >> 8)] = (char)(vx - vy);
 						this.pc += 0x2;
 						break;
 					case 0x0006: //Set V[0x0X00] shr 1
@@ -181,7 +181,7 @@ public class Chip8 {
 						if(vx > vy) {
 							this.v[0xF] = 0;
 						}else this.v[0xF] = 1;
-						this.v[((this.opcode & 0x0F00) >> 0x8)] = (char)((vy - vx) & 0xFF);
+						this.v[((this.opcode & 0x0F00) >> 0x8)] = (char)(vy - vx);
 						this.pc += 0x2;
 						break;
 					case 0x000E:
