@@ -95,24 +95,24 @@ public class Chip8 {
 				this.pc = (char)(this.opcode & 0x0FFF); 
 				break;
 			case 0x2000: //Call subroutine at address 0x2NNN
-				this.stack[this.sp] = this.pc;
 				this.sp++;
+				this.stack[this.sp] = this.pc;
 				this.pc = (char)(this.opcode & 0x0FFF);
 				break;
 			case 0x3000: //Skip next instruction if V[0x3X00] equals to 0x30KK
-				this.vx = this.v[(this.opcode & 0x0F00) >> 0x8]; 
+				this.vx = this.v[((this.opcode & 0x0F00) >> 0x8)]; 
 				if(this.vx == (this.opcode & 0x00FF)) {
 					this.pc += 0x4;
 				}else this.pc += 0x2;
 				break;
 			case 0x4000: //Skip next instruction if V[0x3X00] differs 0x30KK
-				this.vx = this.v[(this.opcode & 0x0F00) >> 0x8];
+				this.vx = this.v[((this.opcode & 0x0F00) >> 0x8)];
 				if(vx != (this.opcode & 0x00FF)) {
 					this.pc += 0x4;
 				}else this.pc += 0x2;
 				break;
 			case 0x5000: //Skip next instruction if V[0x3X00] equals to V[0x30Y0]
-				this.vx = this.v[(this.opcode & 0x0F00) >> 0x8];
+				this.vx = this.v[((this.opcode & 0x0F00) >> 0x8)];
 				this.vy = this.v[((this.opcode & 0x00F0) >> 0x4)]; 
 				if(vx == vy) {
 					this.pc += 0x4;
@@ -124,7 +124,7 @@ public class Chip8 {
 				break;
 			case 0x7000: //Increment 0x70KK on V[0x7X00]
 				this.vx = this.v[((this.opcode & 0x0F00) >> 0x8)];
-				this.v[((this.opcode & 0x0F00) >> 0x8)] += (char)((vx + (this.opcode & 0x00FF)) & 0xFF);
+				this.v[((this.opcode & 0x0F00) >> 0x8)] = (char)((vx + (this.opcode & 0x00FF)) & 0xFF);
 				this.pc += 0x2;
 				break;
 			case 0x8000:
@@ -166,7 +166,7 @@ public class Chip8 {
 						if(vx >= vy) {
 							this.v[0xF] = 0x1;
 						}else this.v[0xF] &= 0x0;
-						this.v[((this.opcode & 0x0F00) >> 8)] -= (char)((vx - vy) & 0xFF);
+						this.v[((this.opcode & 0x0F00) >> 8)] = (char)((vx - vy) & 0xFF);
 						this.pc += 0x2;
 						break;
 					case 0x0006: //Set V[0x0X00] shr 1
@@ -286,26 +286,26 @@ public class Chip8 {
 						break;
 					case 0x0029: //Sets index register to the location of sprite of VX
 						this.vx = this.v[((this.opcode & 0x0F00) >> 0x8)];
-						this.i = (char)(0x050 + (vx * 0x5));
+						this.i = (char)(0x50 + (vx * 0x5));
 						this.pc += 0x2;
 						break;
 					case 0x0033:
 						vx = this.v[((this.opcode & 0x0F00) >> 0x8)];
 						this.memory[this.i] = (char)((vx - (vx % 0x64)) / 0x64);
-						vx -= ((vx - (vx % 0x64)) / 0x64) * 0x64;
+						vx = (char)(((vx - (vx % 0x64)) / 0x64) * 0x64);
 						this.memory[this.i + 0x1] = (char)((vx - (vx % 0xA)) / 0xA);
-						vx -= ((vx - (vx % 0xA)) / 0xA) * 10;
+						vx = (char)(((vx - (vx % 0xA)) / 0xA) * 10);
 						this.memory[this.i + 0x2] = (char)vx;
 						this.pc += 0x2;
 						break;
 					case 0x0055:
 						for(int i = 0; i <= ((opcode & 0x0F00) >> 8); i++) {
-							this.memory[this.i + i] = this.v[i];
+							this.memory[this.i + i] = this.v[i];	
 						}
 						this.pc += 0x2;
 						break;
 					case 0x0065: //FX65 Fills V0 to VX with values from index register
-						for(int i = 0x0; i < ((this.opcode & 0x0F00) >> 8); i++) {
+						for(int i = 0x0; i <= ((this.opcode & 0x0F00) >> 8); i++) {
 							this.v[i] = this.memory[this.i + i];
 						}
 						this.i = (char)(this.i + ((opcode & 0x0F00) >> 8) + 1);
