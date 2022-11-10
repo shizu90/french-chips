@@ -73,7 +73,8 @@ public class Chip8 {
 				"Opcode: " + Integer.toHexString(this.opcode) + 
 				" PC: " + Integer.toHexString(this.pc) + 
 				" SP: " + Integer.toHexString(this.sp) + 
-				" I: " + Integer.toHexString(delay_timer));
+				" I: " + Integer.toHexString(delay_timer)
+		);
 	}
 	
 	public void emuCycle() {
@@ -268,14 +269,15 @@ public class Chip8 {
 			case 0xF000:
 				switch(this.opcode & 0x00FF) {
 					case 0x0007: //Set Vx as delay timer
-						this.v[((this.opcode & 0x0F00) >> 0x8)] = (char)this.delay_timer;
+						this.v[((this.opcode & 0x0F00) >> 0x8)] = (char)(this.delay_timer & 0xFF);
 						this.pc += 0x2;
 						break;
 					case 0x000A: //Wait for a key press, store the value of key in Vx
-						for(int i = 0; i < this.keys.length; i++) {
+						for(int i = 0; i <= this.keys.length; i++) {
 							if(this.keys[i] == 1) {
 								this.v[((opcode & 0x0F00) >> 8)] = (char)i;
 								this.pc += 0x2;
+								break;
 							}
 						}
 						break;
@@ -289,21 +291,25 @@ public class Chip8 {
 						break;
 					case 0x001E: //Increment index with Vx
 						this.vx = this.v[((this.opcode & 0x0F00) >> 0x8)];
-						this.i = (char)(this.i + vx);
+						if(this.i + vx > 0xFFF) {
+							this.v[0xF] = 1;
+						}else {
+							this.v[0xF] = 0;
+						}
+						this.i = (char)((this.i + vx) & 0xFFF);
 						this.pc += 0x2;
 						break;
 					case 0x0029: //Sets index register to the location of sprite of VX
 						this.vx = this.v[((this.opcode & 0x0F00) >> 0x8)];
-						this.i = (char)(0x50 + (vx * 0x5));
+						this.i = (char)(vx * 0x5);
+						this.redraw = true;
 						this.pc += 0x2;
 						break;
 					case 0x0033:
 						vx = this.v[((this.opcode & 0x0F00) >> 0x8)];
-						this.memory[this.i] = (char)((vx - (vx % 0x64)) / 0x64);
-						vx = (char)(((vx - (vx % 0x64)) / 0x64) * 0x64);
-						this.memory[this.i + 0x1] = (char)((vx - (vx % 0xA)) / 0xA);
-						vx = (char)(((vx - (vx % 0xA)) / 0xA) * 10);
-						this.memory[this.i + 0x2] = (char)vx;
+						this.memory[this.i] = (char)(vx / 0x64);
+						this.memory[this.i + 0x1] = (char)((vx % 0x64) / 0xA);
+						this.memory[this.i + 0x2] = (char)((vx % 0x64) % 0xA);
 						this.pc += 0x2;
 						break;
 					case 0x0055:
@@ -313,8 +319,8 @@ public class Chip8 {
 						this.pc += 0x2;
 						break;
 					case 0x0065: //FX65 Fills V0 to VX with values from index register
-						for(int i = 0x0; i <= ((this.opcode & 0x0F00) >> 8); i++) {
-							this.v[i] = this.memory[this.i + i];
+						for(int i = 0; i <= ((this.opcode & 0x0F00) >> 8); i++) {
+							this.v[i] = (char)(this.memory[this.i + i] & 0xFF);
 						}
 						this.i = (char)(this.i + ((opcode & 0x0F00) >> 8) + 1);
 						this.pc += 0x2;
@@ -328,8 +334,9 @@ public class Chip8 {
 		if(this.sound_timer > 0) {
 			this.sound_timer--;
 		}
-		if(this.delay_timer > 0)
+		if(this.delay_timer > 0) {
 			this.delay_timer--;
+		}
 	}
 	
 	public void loadFontset() {
