@@ -68,9 +68,17 @@ public class Chip8 {
 		}
 	}
 	
+	public void logOperation() {
+		System.out.println(
+				"Opcode: " + Integer.toHexString(this.opcode) + 
+				" PC: " + Integer.toHexString(this.pc) + 
+				" SP: " + Integer.toHexString(this.sp) + 
+				" I: " + Integer.toHexString(delay_timer));
+	}
+	
 	public void emuCycle() {
 		this.opcode = (char)((memory[this.pc] << 8) | memory[this.pc + 1]);
-		System.out.print(Integer.toHexString(this.opcode) + " ");
+		logOperation();
 		switch(this.opcode & 0xF000) {
 			case 0x0000:
 				switch(this.opcode & 0x00FF) {
