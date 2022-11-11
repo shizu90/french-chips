@@ -191,6 +191,7 @@ public class Chip8 {
 					default:
 						System.out.println("Invalid opcode: " + Integer.toHexString(opcode.value));
 						pc += 0x2;
+						break;
 				}
 				break;
 			case 0x9000: // Skip next instruction if V[0x0X00] differs V[0x00X0]
@@ -315,6 +316,7 @@ public class Chip8 {
 					default:
 						System.out.println("Invalid opcode: " + Integer.toHexString(opcode.value));
 						pc += 0x2;
+						break;
 				}
 				break;
 		}
