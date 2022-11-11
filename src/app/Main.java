@@ -1,5 +1,7 @@
 package app;
 
+import java.util.Scanner;
+
 import app.chip8.Chip8;
 import app.chip8.display.Chip8Frame;
 
@@ -31,8 +33,17 @@ public class Main extends Thread{
 	}
 	
 	public static void main(String[] args) {
-		Main main = new Main();
-		main.ch8.loadRom(args[0]);
-		main.start();
+		Scanner sc = new Scanner(System.in);
+		
+		//or main.ch8.loadRom(args[0]);
+		
+		System.out.println("Path of rom: ");
+		String path = sc.nextLine();
+		sc.close();
+		if(path.length() > 0) {
+			Main main = new Main();
+			main.ch8.loadRom(path);
+			main.start();
+		}
 	}
 }

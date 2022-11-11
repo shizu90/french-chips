@@ -103,7 +103,7 @@ public class Chip8 {
 				}
 				break;
 			case 0x1000: //Jump to address 0x1NNN
-				pc = (char)opcode.nnn; 
+				pc = (char)opcode.nnn;
 				break;
 			case 0x2000: //Call subroutine at address 0x2NNN
 				stack[sp] = pc;
@@ -133,7 +133,7 @@ public class Chip8 {
 				pc += 0x2;
 				break;
 			case 0x7000: //Increment 0x70KK on V[0x7X00]
-				v[opcode.x] = (char)((v[opcode.x] + opcode.kk) & 0xFF);
+				v[opcode.x] = (char)((v[opcode.x] + opcode.kk));
 				pc += 0x2;
 				break;
 			case 0x8000:
@@ -181,7 +181,7 @@ public class Chip8 {
 							v[opcode.x] += 0x100;
 						pc += 0x2;
 						break;
-					case 0x000E:
+					case 0x000E: // Set VX = VX shl 1
 						v[0xF] = (char)(v[opcode.x] & 0x80);
 						v[opcode.x] <<= 0x1;
 						v[opcode.x] = v[opcode.x];
@@ -217,19 +217,14 @@ public class Chip8 {
 				break;
 			case 0xD000: //Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision				
 				int h = opcode.value & 0x000F;
-				
+				int px;
 				v[0xF] = 0x0;
 				
 				for(int y = 0; y < h; y++) {
-					int ln = memory[i + y];
 					for(int x = 0; x < 0x8; x++) {
-						int px = ln & (0x80 >> x);
-						if(px != 0x0) {
-							int totalX = v[opcode.x] + x;
-							int totalY = v[opcode.y] + y;
-							totalX = totalX % 64;
-							totalY = totalY % 32;
-							int index = (totalY * 64) + totalX;
+						px = memory[i + y] & (0x80 >> x);
+						if(px != 0) {
+							int index = v[opcode.x] + x + ((v[opcode.y] + y) * 64);
 							if(display[index] == 0x1) {
 								v[0xF] = 0x1;
 							}
@@ -271,7 +266,6 @@ public class Chip8 {
 							if(keys[i] == 1) {
 								v[opcode.x] = (char)i;
 								pc += 0x2;
-								break;
 							}
 						}
 						break;
