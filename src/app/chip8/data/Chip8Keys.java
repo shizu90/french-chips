@@ -1,4 +1,4 @@
-package app.chip8;
+package app.chip8.data;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;

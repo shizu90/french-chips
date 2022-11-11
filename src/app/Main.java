@@ -1,7 +1,7 @@
 package app;
 
 import app.chip8.Chip8;
-import app.chip8.Chip8Frame;
+import app.chip8.display.Chip8Frame;
 
 public class Main extends Thread{
 	private Chip8 ch8;

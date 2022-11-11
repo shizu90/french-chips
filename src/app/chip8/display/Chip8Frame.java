@@ -1,9 +1,12 @@
-package app.chip8;
+package app.chip8.display;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
+
+import app.chip8.Chip8;
+import app.chip8.data.Chip8Keys;
 
 public class Chip8Frame extends JFrame{
 	private static final long serialVersionUID = 1L;

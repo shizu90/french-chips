@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Random;
 
+import app.chip8.data.Chip8Fontset;
+
 public class Chip8 {
 	private char[] memory;
 	private char[] v;
@@ -72,7 +74,7 @@ public class Chip8 {
 				"Opcode: " + Integer.toHexString(this.opcode.value) + 
 				" PC: " + Integer.toHexString(this.pc) + 
 				" SP: " + Integer.toHexString(this.sp) + 
-				" I: " + Integer.toHexString(delay_timer)
+				" I: " + Integer.toHexString(this.i)
 		);
 	}
 	

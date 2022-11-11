@@ -1,4 +1,4 @@
-package app.chip8;
+package app.chip8.data;
 
 public class Chip8Fontset {
 	

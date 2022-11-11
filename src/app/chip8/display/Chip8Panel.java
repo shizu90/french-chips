@@ -1,9 +1,11 @@
-package app.chip8;
+package app.chip8.display;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
 import javax.swing.JPanel;
+
+import app.chip8.Chip8;
 
 public class Chip8Panel extends JPanel{
 	private static final long serialVersionUID = 1L;
